@@ -42,12 +42,12 @@ if args.mode == "latency":
         with open(args.output_csv,'a+',newline='') as outf:
             writer = csv.writer(outf, delimiter=',')
             if header_write:
-                writer.writerow(['model', 'latency', 'latency_per_tkn','tp', 'batch_size', 'input_len', 'output_len', 'dtype']) if header_write else None
+                writer.writerow(['model', 'latency (ms)', 'latency_per_tkn (ms)','tp', 'batch_size', 'input_len', 'output_len', 'dtype']) if header_write else None
             reader = json.load(inpf)
             try:
-                latency_per_tkn = str(reader["avg_latency"] / int(args.output_len))
+                latency_per_tkn = str(reader["avg_latency"] / int(args.output_len) * 1000)
                 model_details = args.model                       ,\
-                                str(reader["avg_latency"])       ,\
+                                str(reader["avg_latency"] * 1000),\
                                 latency_per_tkn                  ,\
                                 args.tp                          ,\
                                 args.batch_size                  ,\
@@ -64,7 +64,7 @@ elif args.mode == "throughput":
         with open(args.output_csv,'a+',newline='') as outf:
             writer = csv.writer(outf, delimiter=',')
             if header_write:
-                writer.writerow(['model', 'tot_throughput', 'gen_throughput', 'tp', 'requests', 'num_prompts', 'input_len', 'output_len', 'dtype']) if header_write else None
+                writer.writerow(['model', 'tot_throughput (tok/sec)', 'gen_throughput (tok/sec)', 'tp', 'requests', 'input_len', 'output_len', 'dtype']) if header_write else None
             reader = json.load(inpf)
             try:
                 gen_throughput = str(int(int(args.num_prompts) * int(args.output_len) / reader["elapsed_time"]))

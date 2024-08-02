@@ -67,14 +67,14 @@ elif args.mode == "throughput":
                 writer.writerow(['model', 'tot_throughput', 'gen_throughput', 'tp', 'requests', 'num_prompts', 'input_len', 'output_len', 'dtype']) if header_write else None
             reader = json.load(inpf)
             try:
-                gen_throughput = str(int(args.num_prompts) * int(args.output_len) / reader["elapsed_time"])
-                model_details = args.model                       ,\
-                                str(reader["tokens_per_second"]) ,\
-                                gen_throughput                   ,\
-                                args.tp                          ,\
-                                args.num_prompts                 ,\
-                                args.input_len                   ,\
-                                args.output_len                  ,\
+                gen_throughput = str(int(int(args.num_prompts) * int(args.output_len) / reader["elapsed_time"]))
+                model_details = args.model                            ,\
+                                str(int(reader["tokens_per_second"])) ,\
+                                gen_throughput                        ,\
+                                args.tp                               ,\
+                                args.num_prompts                      ,\
+                                args.input_len                        ,\
+                                args.output_len                       ,\
                                 args.dtype
                 writer.writerow(model_details)
             except csv.Error as e:

@@ -24,7 +24,7 @@
 ```sh
 ./vllm_benchmark_report.sh -s throughput -m NousResearch/Meta-Llama-3-8B -g 1 -d float16
 ```
-| model           | tot_throughput (tok/sec) | gen_throughput (tok/sec) | tp  | requests | input_len | output_len | dtype   |
+| model           | throughput_tot (tok/sec) | throughput_gen (tok/sec) | tp  | requests | input_len | output_len | dtype   |
 | --------------- | ------------------------ | ------------------------ | --- | -------- | --------- | ---------- | ------- |
 | Meta-Llama-3-8B |                          |                          | 1   | 100      | 128       | 128        | float16 |
 | Meta-Llama-3-8B |                          |                          | 1   | 100      | 2048      | 128        | float16 |

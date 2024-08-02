@@ -64,7 +64,7 @@ elif args.mode == "throughput":
         with open(args.output_csv,'a+',newline='') as outf:
             writer = csv.writer(outf, delimiter=',')
             if header_write:
-                writer.writerow(['model', 'tot_throughput (tok/sec)', 'gen_throughput (tok/sec)', 'tp', 'requests', 'input_len', 'output_len', 'dtype']) if header_write else None
+                writer.writerow(['model', 'throughput_tot (tok/sec)', 'throughput_gen (tok/sec)', 'tp', 'requests', 'input_len', 'output_len', 'dtype']) if header_write else None
             reader = json.load(inpf)
             try:
                 gen_throughput = str(int(int(args.num_prompts) * int(args.output_len) / reader["elapsed_time"]))

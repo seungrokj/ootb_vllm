@@ -39,8 +39,8 @@ report_dir="reports_${dtype}"
 tool_latency="/app/vllm/benchmarks/benchmark_latency.py"
 tool_throughput="/app/vllm/benchmarks/benchmark_throughput.py"
 tool_report="vllm_benchmark_report.py"
-n_warm=5
-n_itr=3
+n_warm=3
+n_itr=5
 mkdir -p $report_dir
 
 if [ "$scenario" == "latency" ] || [ "$scenario" == "all" ]; then

@@ -13,6 +13,7 @@ do
 done
 echo "MODEL: $model ";
 
+# only for ROCM
 export HIP_FORCE_DEV_KERNARG=1
 export VLLM_USE_TRITON_FLASH_ATTN=0
 export VLLM_USE_ROCM_CUSTOM_PAGED_ATTN=1
@@ -38,8 +39,8 @@ report_dir="reports_${dtype}"
 tool_latency="/app/vllm/benchmarks/benchmark_latency.py"
 tool_throughput="/app/vllm/benchmarks/benchmark_throughput.py"
 tool_report="vllm_benchmark_report.py"
-n_warm=0
-n_itr=1
+n_warm=5
+n_itr=3
 mkdir -p $report_dir
 
 if [ "$scenario" == "latency" ] || [ "$scenario" == "all" ]; then

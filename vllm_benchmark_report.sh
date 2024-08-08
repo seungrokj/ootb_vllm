@@ -26,8 +26,8 @@ dtype=$datatype
 tp=$numgpu
 
 # latency conditions
-Bat="1 2 4 8 16 32"
-InLatency="2048"
+Bat="1 2 4 8 16 32 64 128 256"
+InLatency="128 2048"
 OutLatency=128
 
 # throughput conditions

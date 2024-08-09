@@ -1,6 +1,14 @@
 #!/usr/bin/bash
 
-#Usage: 
+## Usage: 
+#./vllm_benchmark_report.sh -s $mode -m $hf_model -g $n_gpu -d $datatype
+## example:
+## latency + throughput
+#./vllm_benchmark_report.sh -s all -m NousResearch/Meta-Llama-3-8B -g 1 -d float16
+## latency 
+#./vllm_benchmark_report.sh -s latency -m NousResearch/Meta-Llama-3-8B -g 1 -d float16
+## throughput
+#./vllm_benchmark_report.sh -s throughput -m NousResearch/Meta-Llama-3-8B -g 1 -d float16
 
 while getopts s:m:g:d: flag
 do
@@ -46,10 +54,10 @@ mkdir -p $report_dir
 if [ "$scenario" == "latency" ] || [ "$scenario" == "all" ]; then
     echo "[INFO] LATENCY"
     mode="latency"
-    for bat in $Bat;
+    for inp in $InLatency;
     do
         out=1
-        for inp in $InLatency;
+        for bat in $Bat;
         do
             outjson=${report_dir}/${model_name}_${mode}_prefill_bs${bat}_in${inp}_out${out}_${dtype}.json
             outcsv=${report_dir}/${model_name}_${mode}_report.csv
@@ -62,22 +70,22 @@ if [ "$scenario" == "latency" ] || [ "$scenario" == "all" ]; then
             python3 $tool_report --mode ${mode} --model $model_name --batch-size $bat --tp $tp --input-len $inp --output-len $out --dtype $dtype --input-json $outjson --output-csv $outcsv
         done
     done
-    #for bat in $Bat;
-    #do
-    #    inp=1
-    #    for out in $OutLatency;
-    #    do
-    #        outjson=${report_dir}/${model_name}_${mode}_decoding_bs${bat}_in${inp}_out${out}_${dtype}.json
-    #        outcsv=${report_dir}/${model_name}_${mode}_report.csv
-    #        echo $model $mode $bat $tp $inp $out
-    #        if [ $tp -eq 1 ]; then
-    #            python3 $tool_latency --model $model --batch-size $bat -tp $tp --input-len $inp --output-len $out --num-iters-warmup $n_warm --num-iters $n_itr --trust-remote-code --dtype $dtype --enforce-eager --output-json $outjson
-    #        else
-    #            torchrun --standalone --nnodes 1 --nproc-per-node $tp $tool_latency --model $model --batch-size $bat -tp $tp --input-len $inp --output-len $out --num-iters-warmup $n_warm --num-iters $n_itr --trust-remote-code --dtype $dtype --output-json $outjson
-    #        fi
-    #        python3 $tool_report --mode ${mode} --model $model_name --batch-size $bat --tp $tp --input-len $inp --output-len $out --dtype $dtype --input-json $outjson --output-csv $outcsv
-    #    done
-    #done
+    for bat in $Bat;
+    do
+        inp=1
+        for out in $OutLatency;
+        do
+            outjson=${report_dir}/${model_name}_${mode}_decoding_bs${bat}_in${inp}_out${out}_${dtype}.json
+            outcsv=${report_dir}/${model_name}_${mode}_report.csv
+            echo $model $mode $bat $tp $inp $out
+            if [ $tp -eq 1 ]; then
+                python3 $tool_latency --model $model --batch-size $bat -tp $tp --input-len $inp --output-len $out --num-iters-warmup $n_warm --num-iters $n_itr --trust-remote-code --dtype $dtype --enforce-eager --output-json $outjson
+            else
+                torchrun --standalone --nnodes 1 --nproc-per-node $tp $tool_latency --model $model --batch-size $bat -tp $tp --input-len $inp --output-len $out --num-iters-warmup $n_warm --num-iters $n_itr --trust-remote-code --dtype $dtype --output-json $outjson
+            fi
+            python3 $tool_report --mode ${mode} --model $model_name --batch-size $bat --tp $tp --input-len $inp --output-len $out --dtype $dtype --input-json $outjson --output-csv $outcsv
+        done
+    done
 fi
 
 if [ "$scenario" == "throughput" ] || [ "$scenario" == "all" ]; then
